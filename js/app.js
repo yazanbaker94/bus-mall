@@ -120,11 +120,7 @@ function clickHandler(event) {
 
     }
 
-    function stopClick(){
-        if (clickHandler(event) === 25){
-            clickHandler(event) === false;
-        }
-    }
+
 
 }
 
