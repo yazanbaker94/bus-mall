@@ -69,7 +69,7 @@ for(let i=0; i<randomList.length; i++) {
 }
 
 
-
+let secondDuplicateArray = [];
 function render() {
 
     let rightIndex;
@@ -77,8 +77,11 @@ function render() {
     let middleIndex;
     
     do { rightIndex = randomNumber(0, randomList.length-1);
+        secondDuplicateArray.push(rightIndex);
          leftIndex = randomNumber(0, randomList.length-1);
+         secondDuplicateArray.push(leftIndex);
          middleIndex = randomNumber(0, randomList.length-1 );
+         secondDuplicateArray.push(middleIndex);
     }
 
     while(leftIndex === middleIndex || leftIndex === rightIndex || middleIndex === rightIndex);
@@ -104,10 +107,11 @@ function render() {
     rightImage.alt = randomRightImage.name;
     RandomItems.all[rightIndex].views++;
     
-    console.log(RandomItems.all[15]);
+    
     
 
     } 
+    console.log(secondDuplicateArray);
 
 let buttonSection = document.getElementById('buttonSection');
 
@@ -130,31 +134,75 @@ function clickHandler(event) {
     }
     if(maxClicks === 0){
     imageSection.removeEventListener('click', clickHandler);
-    let resultButton = document.createElement('button');
-    resultButton.textContent = 'View Results';
-    buttonSection.appendChild(resultButton);
-
-    resultButton.addEventListener('click', buttonClickHandler);
-
-    function buttonClickHandler(event) {
-        let unorderedList = document.createElement('ul');
-        buttonSection.appendChild(unorderedList);
-        
-        
-
-        for(let i=0; i<RandomItems.all.length; i++) {
-            let listItems = document.createElement('li');
-            unorderedList.appendChild(listItems);
-            listItems.textContent = RandomItems.all[i].name + " had " + RandomItems.all[i].clicks + " votes and " + RandomItems.all[i].views + " views";
-        }
-    }
-
-
+    createChart();
         
     }
   
 
 }
+function randomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+  
+
+
+  
+  function createChart(){
+    let context = document.getElementById('myChart').getContext('2d');
+    let getRandomNames=[];
+    let getRandomClicks=[];
+    let getRandomViews = [];
+  
+
+    for(let i=0;i<RandomItems.all.length;i++){
+        getRandomViews.push(RandomItems.all[i].views);
+    }
+    for(let i=0;i<RandomItems.all.length;i++){
+        getRandomNames.push(RandomItems.all[i].name);
+    }
+    for(let i=0;i<RandomItems.all.length;i++){
+        getRandomClicks.push(RandomItems.all[i].clicks);
+    }
+
+
+    let chartObject={
+        // The type of chart we want to create
+        type: 'bar',
+        // The data for our dataset
+        data: {
+            labels:getRandomNames,
+            datasets: [{
+                label: 'Random images voting results',
+                backgroundColor: 'rgb(253, 255, 204 )',
+                borderColor: 'rgb(88, 24, 69)',
+                data: getRandomClicks
+            },
+            {
+              label: 'Random images views results',
+              backgroundColor: 'rgb(255, 208, 204 )',
+              borderColor: 'rgb(88, 24, 69',
+              data: getRandomViews
+          }],
+        }, 
+      // Configuration options go here
+      options: {
+        scales: {
+          xAxes: [{
+            barPercentage: 1
+          }]
+        }
+      }
+    };
+    
+
+      
+    
+    render();
+    let chart = new Chart(context,chartObject);
+   
+    
+}
+
 
 
 
