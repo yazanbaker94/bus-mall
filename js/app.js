@@ -145,7 +145,7 @@ function clickHandler(event) {
         for(let i=0; i<RandomItems.all.length; i++) {
             let listItems = document.createElement('li');
             unorderedList.appendChild(listItems);
-            listItems.textContent = RandomItems.all[i].name + " had " + RandomItems.all[i].clicks + " votes and views are " + RandomItems.all[i].views;
+            listItems.textContent = RandomItems.all[i].name + " had " + RandomItems.all[i].clicks + " votes and " + RandomItems.all[i].views + " views";
         }
     }
 
