@@ -51,6 +51,8 @@ function RandomItems(name, ext){
     this.views = 0;
     RandomItems.all.push(this);
 
+
+
 }
 
 RandomItems.all = [];
@@ -69,6 +71,7 @@ for(let i=0; i<randomList.length; i++) {
 }
 
 
+let duplicatedArray = [];
 
 function render() {
 
@@ -77,12 +80,17 @@ function render() {
     let middleIndex;
     
     do { rightIndex = randomNumber(0, randomList.length-1);
-         leftIndex = randomNumber(0, randomList.length-1);
-         middleIndex = randomNumber(0, randomList.length-1 );
-    }
-
-    while(leftIndex === middleIndex || leftIndex === rightIndex || middleIndex === rightIndex);
-      
+        leftIndex = randomNumber(0, randomList.length-1);
+        
+        middleIndex = randomNumber(0, randomList.length-1 );
+        
+    }while(leftIndex === middleIndex || leftIndex === rightIndex || middleIndex === rightIndex || duplicatedArray.includes(rightIndex) || duplicatedArray.includes(leftIndex) || duplicatedArray.includes(middleIndex));
+    duplicatedArray[0] = rightIndex;
+    
+    duplicatedArray[1] = leftIndex;
+        
+    
+    duplicatedArray[2] = middleIndex;
    
     
     let randomLeftImage = RandomItems.all[leftIndex];
@@ -104,17 +112,18 @@ function render() {
     rightImage.alt = randomRightImage.name;
     RandomItems.all[rightIndex].views++;
     
-    console.log(RandomItems.all[15]);
+    
     
 
     } 
 
+    
 let buttonSection = document.getElementById('buttonSection');
 
 
 imageSection.addEventListener('click', clickHandler);
 
-let maxClicks = 25;
+let maxClicks = 5;
 function clickHandler(event) {
     maxClicks-=1;
     if(event.target.id === 'leftImage' || event.target.id === 'rightImage' || event.target.id === 'middleImage'){
@@ -130,32 +139,102 @@ function clickHandler(event) {
     }
     if(maxClicks === 0){
     imageSection.removeEventListener('click', clickHandler);
-    let resultButton = document.createElement('button');
-    resultButton.textContent = 'View Results';
-    buttonSection.appendChild(resultButton);
-
-    resultButton.addEventListener('click', buttonClickHandler);
-
-    function buttonClickHandler(event) {
-        let unorderedList = document.createElement('ul');
-        buttonSection.appendChild(unorderedList);
+    if(maxClicks === 0){
+        imageSection.removeEventListener('click', clickHandler);
         
-        
+    
+        localStorage.setItem('ImagesList',JSON.stringify(RandomItems.all));
 
-        for(let i=0; i<RandomItems.all.length; i++) {
-            let listItems = document.createElement('li');
-            unorderedList.appendChild(listItems);
-            listItems.textContent = RandomItems.all[i].name + " had " + RandomItems.all[i].clicks + " votes and views are " + RandomItems.all[i].views;
-        }
+    
+
     }
-
-
-        
     }
   
 
 }
+let resultButton = document.createElement('button');
+        resultButton.textContent = 'View Results';
+        buttonSection.appendChild(resultButton);
 
+
+function buttonClickHandler(event) {
+    createChart();
+    }
+
+    resultButton.addEventListener('click', buttonClickHandler);
+
+
+function randomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+  
+
+
+  
+  function createChart(){
+    let context = document.getElementById('myChart').getContext('2d');
+    let getRandomNames=[];
+    let getRandomClicks=[];
+    let getRandomViews = [];
+    let randomImages=getData();
+    console.log(randomImages)
+  
+
+    for(let i=0;i<RandomItems.all.length;i++){
+        getRandomViews.push(randomImages[i].views);
+    }
+    for(let i=0;i<RandomItems.all.length;i++){
+        getRandomNames.push(randomImages[i].name);
+    }
+    for(let i=0;i<RandomItems.all.length;i++){
+        getRandomClicks.push(randomImages[i].clicks);
+    }
+
+
+    let chartObject={
+        // The type of chart we want to create
+        type: 'bar',
+        // The data for our dataset
+        data: {
+            labels:getRandomNames,
+            datasets: [{
+                label: 'Random images voting results',
+                backgroundColor: 'rgb(253, 255, 204 )',
+                borderColor: 'rgb(88, 24, 69)',
+                data: getRandomClicks
+            },
+            {
+              label: 'Random images views results',
+              backgroundColor: 'rgb(255, 208, 204 )',
+              borderColor: 'rgb(88, 24, 69',
+              data: getRandomViews
+          }],
+        }, 
+      // Configuration options go here
+      options: {
+        scales: {
+          xAxes: [{
+            barPercentage: 1
+          }]
+        }
+      }
+    };
+    
+
+      
+    
+    // render();
+    let chart = new Chart(context,chartObject);
+   
+    
+}
+
+function getData(){
+    let data=localStorage.getItem('ImagesList');
+    data=JSON.parse(data);
+   
+    return data
+  }
 
 
 
