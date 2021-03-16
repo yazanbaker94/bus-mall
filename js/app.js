@@ -69,7 +69,8 @@ for(let i=0; i<randomList.length; i++) {
 }
 
 
-let secondDuplicateArray = [];
+let duplicatedArray = [];
+
 function render() {
 
     let rightIndex;
@@ -77,15 +78,17 @@ function render() {
     let middleIndex;
     
     do { rightIndex = randomNumber(0, randomList.length-1);
-        secondDuplicateArray.push(rightIndex);
-         leftIndex = randomNumber(0, randomList.length-1);
-         secondDuplicateArray.push(leftIndex);
-         middleIndex = randomNumber(0, randomList.length-1 );
-         secondDuplicateArray.push(middleIndex);
-    }
-
-    while(leftIndex === middleIndex || leftIndex === rightIndex || middleIndex === rightIndex);
-      
+        leftIndex = randomNumber(0, randomList.length-1);
+        
+        middleIndex = randomNumber(0, randomList.length-1 );
+        console.log(duplicatedArray)
+    }while(leftIndex === middleIndex || leftIndex === rightIndex || middleIndex === rightIndex || duplicatedArray.includes(rightIndex) || duplicatedArray.includes(leftIndex) || duplicatedArray.includes(middleIndex));
+    duplicatedArray[0] = rightIndex;
+    
+    duplicatedArray[1] = leftIndex;
+        
+    
+    duplicatedArray[2] = middleIndex;
    
     
     let randomLeftImage = RandomItems.all[leftIndex];
@@ -111,14 +114,14 @@ function render() {
     
 
     } 
-    console.log(secondDuplicateArray);
 
+    
 let buttonSection = document.getElementById('buttonSection');
 
 
 imageSection.addEventListener('click', clickHandler);
 
-let maxClicks = 25;
+let maxClicks = 5;
 function clickHandler(event) {
     maxClicks-=1;
     if(event.target.id === 'leftImage' || event.target.id === 'rightImage' || event.target.id === 'middleImage'){
@@ -134,8 +137,18 @@ function clickHandler(event) {
     }
     if(maxClicks === 0){
     imageSection.removeEventListener('click', clickHandler);
-    createChart();
-        
+    if(maxClicks === 0){
+        imageSection.removeEventListener('click', clickHandler);
+        let resultButton = document.createElement('button');
+        resultButton.textContent = 'View Results';
+        buttonSection.appendChild(resultButton);
+    
+        resultButton.addEventListener('click', buttonClickHandler);
+    
+        function buttonClickHandler(event) {
+        createChart();
+        }
+    }
     }
   
 
@@ -197,7 +210,7 @@ function randomNumber(min, max) {
 
       
     
-    render();
+    // render();
     let chart = new Chart(context,chartObject);
    
     
