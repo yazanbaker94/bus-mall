@@ -51,6 +51,8 @@ function RandomItems(name, ext){
     this.views = 0;
     RandomItems.all.push(this);
 
+
+
 }
 
 RandomItems.all = [];
@@ -81,7 +83,7 @@ function render() {
         leftIndex = randomNumber(0, randomList.length-1);
         
         middleIndex = randomNumber(0, randomList.length-1 );
-        console.log(duplicatedArray)
+        
     }while(leftIndex === middleIndex || leftIndex === rightIndex || middleIndex === rightIndex || duplicatedArray.includes(rightIndex) || duplicatedArray.includes(leftIndex) || duplicatedArray.includes(middleIndex));
     duplicatedArray[0] = rightIndex;
     
@@ -139,20 +141,29 @@ function clickHandler(event) {
     imageSection.removeEventListener('click', clickHandler);
     if(maxClicks === 0){
         imageSection.removeEventListener('click', clickHandler);
-        let resultButton = document.createElement('button');
-        resultButton.textContent = 'View Results';
-        buttonSection.appendChild(resultButton);
+        
     
-        resultButton.addEventListener('click', buttonClickHandler);
+        localStorage.setItem('ImagesList',JSON.stringify(RandomItems.all));
+
     
-        function buttonClickHandler(event) {
-        createChart();
-        }
+
     }
     }
   
 
 }
+let resultButton = document.createElement('button');
+        resultButton.textContent = 'View Results';
+        buttonSection.appendChild(resultButton);
+
+
+function buttonClickHandler(event) {
+    createChart();
+    }
+
+    resultButton.addEventListener('click', buttonClickHandler);
+
+
 function randomNumber(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
@@ -165,16 +176,18 @@ function randomNumber(min, max) {
     let getRandomNames=[];
     let getRandomClicks=[];
     let getRandomViews = [];
+    let randomImages=getData();
+    console.log(randomImages)
   
 
     for(let i=0;i<RandomItems.all.length;i++){
-        getRandomViews.push(RandomItems.all[i].views);
+        getRandomViews.push(randomImages[i].views);
     }
     for(let i=0;i<RandomItems.all.length;i++){
-        getRandomNames.push(RandomItems.all[i].name);
+        getRandomNames.push(randomImages[i].name);
     }
     for(let i=0;i<RandomItems.all.length;i++){
-        getRandomClicks.push(RandomItems.all[i].clicks);
+        getRandomClicks.push(randomImages[i].clicks);
     }
 
 
@@ -216,7 +229,12 @@ function randomNumber(min, max) {
     
 }
 
-
+function getData(){
+    let data=localStorage.getItem('ImagesList');
+    data=JSON.parse(data);
+   
+    return data
+  }
 
 
 
